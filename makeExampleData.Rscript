@@ -1,0 +1,79 @@
+#!/usr/bin/env Rscript
+
+## LIBRARIES
+library(data.table)
+library(arrangements)
+
+
+## ARGUMENTS AND PARAMETERS
+
+# uncomment line below when using actual script
+# args <- commandArgs(trailingOnly=TRUE)
+# remove following line when using actual script
+args <- c("5","50")
+
+# number of haplotypes
+k <- as.numeric(args[1])
+
+# number of observations
+n <- as.numeric(args[2])
+
+# Observable characters (nucleotides)
+possible_observations <- c("A","C","T","G")
+
+
+## FUNCTIONS
+
+get_haplotype_mismatches <- function(from1, from2, to1, to2) {
+    from <- sort(c(from1, from2))
+    to <- sort(c(to1, to2))
+    2 - sum(from[1]==to[1], from[2]==to[2])
+}
+
+get_transition_penalty <- function(position, observation_matrix, mismatches) {
+    if(mismatches==0) {
+        return(0)
+    } else {
+        return(log10(observation_matrix[position, distance]^mismatches))
+    }
+}
+
+
+
+## RUN CODE
+
+# First, generate matrix of observations, and their corresponding positions in the genome
+# Generate n samples of observations using random uniform distribution
+# where distance represent centiMorgans (cM) such that distance between
+# observations is the probability of recombination between them
+distances <- sort(runif(n))
+observations <- sample(possible_observations, size=n, replace=TRUE)
+observation_matrix <- data.table("distance1" = distances, "observation" = observations)
+observation_matrix[, "distance2" := shift(distance1, n=1L, type="lag")]
+observation_matrix[, "distance" := distance1 - distance2]
+observation_matrix[, c("distance1","distance2") := NULL]
+
+
+# Generate matrix of transition mismatch values
+states <- data.table(combinations(k, 2, replace = TRUE))
+setnames(states, c("h1", "h2"))
+states[, id := paste(h1, h2, sep="_")]
+transitions <-  data.table(permutations(states$id, 2, replace=TRUE))
+setnames(transitions, c("from", "to"))
+transitions[, c("from1", "from2") := tstrsplit(from, "_")]
+transitions[, c("to1", "to2") := tstrsplit(to, "_")]
+transitions[, indx := 1:.N]
+transitions[, haplotype_mismatches := 2 - get_haplotype_matches(from1, from2, to1, to2), by=indx]
+transitions[, indx := NULL]
+
+
+
+
+# Testing with a few parameters:
+position <- 34
+from1 <- 1
+from2 <- 1
+to1 <- 2
+to2 <- 2
+
+get_transition_penalty(position, observation_matrix, mismatches=get_haplotype_mismatches(from1, from2, to1, to2))
