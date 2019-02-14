@@ -1,0 +1,8 @@
+t   hidden_state
+1   AA
+2   AA
+3   AB
+4   AB
+5   AB
+6   BB
+7   BB

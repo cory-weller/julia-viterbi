@@ -1,0 +1,7 @@
+from  to  prob
+AA    AA  0.989
+AA    AB  0.01
+AA    BB  0.001
+AB    AB  0.989
+AB    BB  0.01
+BB    BB  0.989
