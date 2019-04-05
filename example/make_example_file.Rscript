@@ -1,0 +1,51 @@
+# Just notes here -- not a fully formed script (at all)
+
+library(data.table)
+
+dat <- fread('haplotypes.vcf')
+haps <- fread('population.haplotypes')
+
+args <- commandArgs(trailingOnly=TRUE)
+individual=
+
+# Extract individual's path based on a given chromosome and individual #
+path <- haps[individual== # & `#CHROM`=="2L"]
+fwrite(path, file="true_path.txt", quote=F, row.names=F, col.names=T, sep="\t")
+path <- fread('true_path.txt')
+path
+path$lineID
+path$lineID
+unique(path$lineID)
+minimal_set <- unique(path$lineID)
+minimal_set <- unique(c(path$lineID, sample(unique(hap$lineID), size=10, replace=T))
+medium_set <- unique(c(path$lineID, sample(unique(hap$lineID), size=10, replace=T)))
+maximum_set <- unique(hap$lineID)
+
+
+
+
+obs <- data.table(hap1 = c(dat[POS >= 1 & POS <= 4318686]$"RAL-517", dat[POS >= 4318687 & POS <= 8501605]$"RAL-509", dat[POS >= 8501606 & POS <= 23100000]$"RAL-189"))
+obs[, hap2 := c(dat[POS >= 1 & POS <= 12278650]$"RAL-820", dat[POS >= 12278651 & POS <= 23100000]$"RAL-105")]
+obs[, h1 := tstrsplit(hap1, "/")[1]]
+obs[, h2 := tstrsplit(hap2, "/")[1]]
+obs[, POS := dat$POS]
+obs <- obs[, c("POS","h1","h2")]
+
+obs[,sequencingDepth := rpois(nrow(obs), lambda=0.05))]
+obs_single <- obs[sequencingDepth == 1]
+
+
+
+write.table(dat[POS %in% obs_single$POS][,c("#CHROM","POS","REF","ALT",minimal_set), with=F], file="minimal_set.dat", quote=F, row.names=F, col.names=T, sep="\t")
+write.table(dat[POS %in% obs_single$POS][,c("#CHROM","POS","REF","ALT",medium_set), with=F], file="medium_set.dat", quote=F, row.names=F, col.names=T, sep="\t")
+
+obs_single[, sequencedHaplotype := sample(c("hap1","hap2"), size=.N, replace=T)]
+obs_single[, observation := ifelse(sequencedHaplotype=="hap1",h1, h2)]
+obs_single[, c("sequencedHaplotype","sequencingDepth","h1","h2") := NULL]
+
+write.table(obs_single, file="observations.dat", quote=F, row.names=F, col.names=T, sep="\t")
+
+
+
+sed 's@1/1@1@g' minimal_set.dat | sed 's@0/0@0@g' | sed 's@./.@.@g'  | less > minimal.tmp
+sed 's@1/1@1@g' medium_set.dat | sed 's@0/0@0@g' | sed 's@./.@.@g'  | less > medium.tmp
