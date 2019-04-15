@@ -1,4 +1,8 @@
 #Joseph Outten - viterbi algorithm implementation
+#medium 1/10 of number of observations should be about 10min.
+#Shuffle the file to get some subset of the
+#Need to parse info file talking about how position can changetransition values - file incorporates function of recombination rate at different nucleotide distances (centimorgans) to see how likely recombination between.
+#tell it how recombinant the inidv are to get scalar to mult by the recombination rate - use the viterbi 
 
 function get_emission_value(observation, state_index)
 
