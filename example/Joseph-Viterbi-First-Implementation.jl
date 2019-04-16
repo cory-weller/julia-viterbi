@@ -13,8 +13,20 @@ function get_emission_value(observation, state_index)
         second_value = HAPS_LINE[state_index%(num_haplotypes) + to_add_to_first_haplotype]
     end
 
-    state_tuple = (HAPS_LINE[cld(state_index,(num_haplotypes)) + to_add_to_first_haplotype], second_value)
+    temp_state_tuple = (HAPS_LINE[cld(state_index,(num_haplotypes)) + to_add_to_first_haplotype], second_value)
 
+    if temp_state_tuple[1] == "."
+        temp_1 = "0"
+    else
+        temp_1 = temp_state_tuple[1]
+
+    end
+    if temp_state_tuple[2] == "."
+        temp_2 = "0"
+    else
+        temp_2 = temp_state_tuple[2]
+    end
+    state_tuple = (temp_1, temp_2)
     return floor(Int, parse(Int,state_tuple[1]) + parse(Int, state_tuple[2]))
 
 end
@@ -40,9 +52,9 @@ function get_transition_value(previous_state_index, state_index)
     previous_state_tuple = (header_names[cld(previous_state_index,(num_haplotypes)) + to_add_to_first_haplotype], prev_second_value)
 
     if previous_state_index == state_index
-        return 1
+        return 0.9
     else
-        return 0
+        return 0.01
     end
 end
 
@@ -78,9 +90,9 @@ print("[")
 
 for observation_number in (start_of_observations_row + 1):(num_SNPs + 1)
 
-    #if observation_number % floor(Int, num_SNPs/1) == 0
+    if observation_number % floor(Int, num_SNPs/50) == 0
         print(".")
-    #end
+    end
 
     OBS_ALLELE = (split(observations[observation_number]))[2]
     global prev_HAPS_LINE = split(haplotypes[observation_number - 1])
@@ -125,7 +137,20 @@ for back_trace_step in 1:(num_SNPs - 1)
 
 end
 
-println("The end: ", final_path)
+#println("The end: ", final_path)
+println(split(haplotypes[2])[2], " : " , final_path[1])
+indexing = 2
+prev_final_path = final_path[1]
+while indexing < length(final_path)
+    while (final_path[indexing] == prev_final_path)
+        global indexing += 1
+        if indexing >= length(final_path)
+            break
+        end
+    end
+    println(split(haplotypes[indexing+1])[2], " : ", final_path[indexing])
+    global prev_final_path = final_path[indexing]
+end
 second_time = time()
 println("time elapsed = ", (second_time - first_time))
 println("max prob: ", prob_max_path)
