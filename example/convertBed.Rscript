@@ -1,0 +1,26 @@
+# Convert c (cM per Mb) to Morgans by multiplying value in 4th column by 0.001
+bed[, M := c * ((stop-start)/1e8)]
+
+# Create hash table with chr -> expected value for number of recombination events
+#   e.g.,
+#   > recombination_rates[["2L"]]
+#   [1] 0.5533038
+recombination_rates <- new.env()
+for(chromosome in chromosomes) {
+    recombination_rates[[chromosome]] <- sum(bed[chr==chromosome]$M)       # convert c (cM per Megabase) to Morgans
+}
+
+chromosome_sizes <- new.env()
+for(chromosome in chromosomes) {
+    chromosome_sizes[[chromosome]] <- max(bed[chr==chromosome]$stop)
+}
+
+# calculate cumulative sum of recombination rates
+bed[, cumulative_M := cumsum(M), by=chr]
+
+
+# create function from linear interpolation of cumulative recombination rate using approxfun
+recombination_function <- new.env()
+for(chromosome in chromosomes) {
+    recombination_function[[as.character(chromosome)]] <- approxfun(c(0, bed[chr==chromosome]$scaled), c(0,bed[chr==chromosome]$stop))
+}
