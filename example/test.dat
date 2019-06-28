@@ -1,0 +1,5 @@
+#CHROM  POS     REF     ALT     First   Second  Third   Fourth  Fifth
+2L      5437    A       T       1       0       .       1       1
+2L      5670    C       T       1       0       0       0       1
+2L      5923    A       G       1       0       1       0       0
+2L      5974    A       G       1       1       1       1       0
