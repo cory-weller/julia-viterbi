@@ -1,0 +1,12 @@
+1: Figure out if need to incorporate an option to do male X chromosomes
+2: Figure out if need to do joint, independent, dependent, or all for the ancestral block scheme
+	2a: Read through the necessary figures from the RABBIT papers and probability stuff to get those values (should still be able to be auto generated)
+3: Figure out how to make a similarity score that will correctly predict how well the imputed genotype is a match
+	3a: Do we want a penalty on misses/non contiguous hits? Make this a parameter?
+	3b: Do we need to/how to incorporate a sliding window implementation?
+		3bi: Idea: Have two arrays which each hold a part of the memory you're working with, one which comes from previous window (is the overlap) and one which is new so you only ever have to read in each line once
+	3c: How do we do this efficiently in memory?
+4: Need to make sure Viterbi is parallelizable.
+5: Need to get the observation values from the original RABBIT paper as well
+6: Use SIMD and other decorators as well as some other optimizations (fortran ordering on looping is apparently another one)
+7: Currently operating on the assumption that there will never be two crossover events in this process so will only have one change at a time. This is not consistent with the joint or independent process but is with the dependent. Don't think this is a great assumption however. 
