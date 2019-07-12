@@ -4,7 +4,7 @@
 using DelimitedFiles
 using LinearAlgebra
 
-function get_emission_value(observation, typed_prediction, IBD, f_error, t_error)
+function get_emission_value(observation::String, typed_prediction::String, IBD, f_error::Float64, t_error::Float64)
 
     """
     Returns the emission value for a haplotype state given the observation,
@@ -14,6 +14,9 @@ function get_emission_value(observation, typed_prediction, IBD, f_error, t_error
 
     Zheng C, Boer MP, van Eeuwijk FA. Reconstruction of Genome Ancestry Blocks in Multiparental Populations. Genetics. 2015;200(4):1073–1087. doi:10.1534/genetics.115.177873
     """
+
+    numerator::Float64 = 0.0
+    denominator::Float64 = 0.0
 
     if observation == "0" #i.e. observation is the reference allele
 
@@ -73,6 +76,7 @@ function get_emission_value(observation, typed_prediction, IBD, f_error, t_error
 
         else
             print("Wrong haplotype file format.")
+            return 0.0
 
         end
 
@@ -134,6 +138,7 @@ function get_emission_value(observation, typed_prediction, IBD, f_error, t_error
 
         else
             print("Wrong haplotype file format.")
+            return 0.0
 
         end
 
@@ -195,19 +200,19 @@ function get_emission_value(observation, typed_prediction, IBD, f_error, t_error
 
         else
             print("Wrong haplotype file format.")
-            return 0
+            return 0.0
 
         end
 
     else
         print("Wrong observation file format")
-        return 0
+        return 0.0
 
     end
 
 end
 
-function get_transition_value(previous_state_index, state_index, num_haplotypes, index_offset_of_first_haplotype)
+function get_transition_value(previous_state_index::Int64, state_index::Int64, num_haplotypes::Int64, index_offset_of_first_haplotype::Int64)::Float64
 
     """
     Returns the probability of one haplotype state transitioning to another
@@ -216,13 +221,13 @@ function get_transition_value(previous_state_index, state_index, num_haplotypes,
     relevant haplotypes and the offset of the first haplotype in the file.
     """
 
-    cur_second_value = (state_index - 1)%(num_haplotypes) + index_offset_of_first_haplotype + 1
+    cur_second_value::Int64 = (state_index - 1)%(num_haplotypes) + index_offset_of_first_haplotype + 1
 
-    prev_second_value = (previous_state_index - 1)%(num_haplotypes) + index_offset_of_first_haplotype + 1
+    prev_second_value::Int64 = (previous_state_index - 1)%(num_haplotypes) + index_offset_of_first_haplotype + 1
 
-    state_tuple = (cld(state_index,(num_haplotypes)) + index_offset_of_first_haplotype, cur_second_value)
+    state_tuple::Tuple{Int64,Int64} = (cld(state_index,(num_haplotypes)) + index_offset_of_first_haplotype, cur_second_value)
 
-    previous_state_tuple = (cld(previous_state_index,(num_haplotypes)) + index_offset_of_first_haplotype, prev_second_value)
+    previous_state_tuple::Tuple{Int64,Int64} = (cld(previous_state_index,(num_haplotypes)) + index_offset_of_first_haplotype, prev_second_value)
 
     if previous_state_index == state_index
         return 0.999
@@ -262,8 +267,7 @@ most_likely_paths_so_far = Array{Float64}(undef, num_hap_combinations, num_SNPs)
 most_likely_previous_paths = Array{Float64}(undef, num_hap_combinations, num_SNPs) #holds where the most likely path thus far came from
 
 #initializes the first column of most_likely_paths_so_far with the appropriate emission values.
-#Threads.@threads
-for initial_prob_position in 1:(num_haplotypes^2)
+Threads.@threads for initial_prob_position in 1:(num_haplotypes^2)
 
     founder_1 = HAPS_LINE[cld(initial_prob_position, (num_haplotypes)) + index_offset_of_first_haplotype]
     founder_2 = HAPS_LINE[(initial_prob_position - 1)%num_haplotypes + index_offset_of_first_haplotype + 1]
@@ -295,8 +299,7 @@ for observation_number in (start_of_observations_row + 1):(num_SNPs + 1)
     OBS_ALLELE = observations[observation_number]
     HAPS_LINE = haplotypes[observation_number,:]
 
-#Threads.@threads
-    for haplotype_state in 1:(num_haplotypes^2)
+Threads.@threads for haplotype_state in 1:(num_haplotypes^2)
 
         finding_the_way = Array{Float64}(undef, num_hap_combinations)
 
@@ -400,7 +403,7 @@ for haplotype in 1:2
             line = string(haplotype, "  ",  '\t', "   " ,output[row_num][3], '\t')
             prev_entry = entry
         end
-        
+
     end
     line = line * string(output[length(output)][3], "   ", '\t', "-", '\t', "-", '\t', prev_entry)
     println(line)
