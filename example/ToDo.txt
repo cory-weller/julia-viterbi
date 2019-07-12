@@ -9,4 +9,36 @@
 4: Need to make sure Viterbi is parallelizable.
 5: Need to get the observation values from the original RABBIT paper as well
 6: Use SIMD and other decorators as well as some other optimizations (fortran ordering on looping is apparently another one)
-7: Currently operating on the assumption that there will never be two crossover events in this process so will only have one change at a time. This is not consistent with the joint or independent process but is with the dependent. Don't think this is a great assumption however. 
+7: Currently operating on the assumption that there will never be two crossover events in this process so will only have one change at a time. This is not consistent with the joint or independent process but is with the dependent. Don't think this is a great assumption however.
+
+Notes
+
+#medium 1/10 of number of observations should be about 10min.
+#Shuffle the file to get some subset of the
+#Need to parse info file talking about how position can changetransition values - file incorporates function of recombination rate at different nucleotide distances (centimorgans) to see how likely recombination between.
+#tell it how recombinant the inidv are to get scalar to mult by the recombination rate - use the viterbi
+
+#Optimizations:
+#Declare variable types during declaration
+#Get some parallelization
+#PASS THESE IN INSTEAD OF A BUNCH OF GLOBAL VARIABLES
+
+#MAY NEED TO MAKE IT A BUNCH OF FUNCTIONS INSTEAD TO REALLY SPEED UP RUNTIME AND AVOID GLOBAL VARIABLES
+
+maybe could use SIMD to vectorize the emission value calculations...
+
+On the transition probabilities:
+	#take the final column and multiply by 0.001 to get the probability of the
+	#recombination in that range, then take the cumulative sum of the probabilities in
+	#the column and make a linear model to be able to give two positions and get the
+	#recombination probability between them by subtracting their y-values given that
+	#model (would just be the cumulative sum if thinking about recombination from the
+	#start of the chromosome), then use all this to generate the transition probability
+	#Probably good idea to plot it to see if its right by plotting and comparing to
+	#the graph that Cory provided
+	#Do not make it more likely to recombine if haven't seen one in a while because
+	#those are independent events and just looking at one window at a first_time
+
+	#This may need to be updated to reflect that there can be two crossover events in one location
+
+Could just replace index_offset_of_first_haplotype with the constant that it is if we will never change it (4)
