@@ -7,3 +7,14 @@ The files `#.counts` include the expected file format for input. As-is, it's cur
 The file `founders.txt` lists the total set of potential parents any individual could have., while the files `#.mlp` include the expected file format for reducing search space by ranking most likely parents (mlp). N represents the 'score' where higher is better. Though it ranks all founders, we may only take the top N per chromosome (like top 12 or top 16).
 
 The file `population.haps` includes the true path used to generate the simulated individuals. All chromosomes for all three individuals are included in this single file.
+
+Note to self on generating the data:
+
+* `cut -f 1-9 haplotypes.polarized.vcf | sed 's@$@\t0/0@g' > dm3.intervals.vcf`
+* Ensure `dm3.intervals.vcf` includes header
+* extract `.bam` files from `.zip` archive
+* index `.bam` files with `samtools index`
+* `module load gatk
+* `gatk CollectAllelicCounts -I 1.bam -R ./IndoorData/data_external/all_dmel.fasta -O counts.tmp -L ../dm3.intervals.vcf`
+
+
