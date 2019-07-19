@@ -8,7 +8,11 @@ The file `founders.txt` lists the total set of potential parents any individual 
 
 The file `population.haps` includes the true path used to generate the simulated individuals. All chromosomes for all three individuals are included in this single file.
 
-Note to self on generating the data:
+# Retrieving haplotype data:
+
+`wget -L https://virginia.box.com/shared/static/4r7uqcrk00dlinsc6134yte22vnjvy53.gz -O haplotypes.polarized.vcf.gz`
+
+# Note to self on generating the data:
 
 * `cut -f 1-9 haplotypes.polarized.vcf | sed 's@$@\t0/0@g' > dm3.intervals.vcf`
 * Ensure `dm3.intervals.vcf` includes header
