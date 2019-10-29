@@ -219,7 +219,7 @@ for index in range(1, len(sys.argv)):
 
     if file.endswith("wide.haps"): #Currently only configured for 2L
         chrom_list = ["2L"]
-        with open("../haplotypes.polarized.vcf") as f:
+        with open("haplotypes.polarized.vcf") as f:
             header_haplotypes = f.readline().split()
         with open(file) as f:
             header = f.readline()
