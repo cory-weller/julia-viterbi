@@ -282,7 +282,7 @@ for index in range(1, len(sys.argv)):
             header += "\n"
             w.write(header)
             w.close()
-            to_run = "grep "+ cur_chrom+ " ../haplotypes.polarized.vcf | cut -f "+ to_cut + " >> " + file_name
+            to_run = "grep "+ cur_chrom+ " haplotypes.polarized.vcf | cut -f "+ to_cut + " >> " + file_name
             print("to_run:", to_run)
             print("File name:",file)
             # print("Chrom: ", cur_chrom)
