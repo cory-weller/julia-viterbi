@@ -57,9 +57,9 @@ for index in range(1, len(sys.argv)):
                     print("Line: ",line)
                     # to_run = to_run.split()
                     result = subprocess.run(to_run, stdout=subprocess.PIPE, shell=True).stdout.decode("utf-8")
-                    subprocess.run("sed -i 's/\t0/\t./g' "+file_name, shell=True)
-                    subprocess.run("sed -i 's/\t1/\t0/g' "+file_name, shell=True)
-                    subprocess.run("sed -i 's/\t-1/\t1/g' "+file_name, shell=True)
+                    # subprocess.run("sed -i 's/\t0/\t./g' "+file_name, shell=True)
+                    # subprocess.run("sed -i 's/\t1/\t0/g' "+file_name, shell=True)
+                    # subprocess.run("sed -i 's/\t-1/\t1/g' "+file_name, shell=True)
                     cur_chrom = line[0]
                     file_name = ind_num+ "_"+line[0] + "_true_founders.dat"
                     w = open(file_name, "w")
@@ -189,9 +189,9 @@ for index in range(1, len(sys.argv)):
                     print("Line: ",line)
                     # to_run = to_run.split()
                     result = subprocess.run(to_run, stdout=subprocess.PIPE, shell=True).stdout.decode("utf-8")
-                    subprocess.run(str("sed -i 's/\t0/\t./g' "+file_name), shell=True)
-                    subprocess.run("sed -i 's/\t1/\t0/g' "+file_name, shell=True)
-                    subprocess.run("sed -i 's/\t-1/\t1/g' "+file_name, shell=True)
+                    # subprocess.run(str("sed -i 's/\t0/\t./g' "+file_name), shell=True)
+                    # subprocess.run("sed -i 's/\t1/\t0/g' "+file_name, shell=True)
+                    # subprocess.run("sed -i 's/\t-1/\t1/g' "+file_name, shell=True)
                     cur_chrom = line[0]
                     file_name = ind_num+ "_"+line[0] + "_true_founders_with_random.dat"
                     w = open(file_name, "w")
@@ -256,16 +256,16 @@ for index in range(1, len(sys.argv)):
                     header += "\n"
                     w.write(header)
                     w.close()
-                    to_run = "grep "+ cur_chrom+ " ../haplotypes.polarized.vcf | cut -f "+ to_cut + " >> " + file_name
+                    to_run = "grep "+ cur_chrom+ " haplotypes.polarized.vcf | cut -f "+ to_cut + " >> " + file_name
                     print("to_run:", to_run)
                     print("File name:",file)
                     # print("Chrom: ", cur_chrom)
                     # print("Line: ",line)
                     # to_run = to_run.split()
                     result = subprocess.run(to_run, stdout=subprocess.PIPE, shell=True).stdout.decode("utf-8")
-                    subprocess.run(str("sed -i 's/\t0/\t./g' "+file_name), shell=True)
-                    subprocess.run("sed -i 's/\t1/\t0/g' "+file_name, shell=True)
-                    subprocess.run("sed -i 's/\t-1/\t1/g' "+file_name, shell=True)
+                    # subprocess.run(str("sed -i 's/\t0/\t./g' "+file_name), shell=True)
+                    # subprocess.run("sed -i 's/\t1/\t0/g' "+file_name, shell=True)
+                    # subprocess.run("sed -i 's/\t-1/\t1/g' "+file_name, shell=True)
                     cur_chrom = line[0]
                     file_name = ind_num+ "_"+line[0] + "_true_founders_wide.dat"
                     w = open(file_name, "w")
